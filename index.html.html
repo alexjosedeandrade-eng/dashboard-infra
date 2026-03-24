@@ -1,0 +1,700 @@
+<html data-theme="light" style=""><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard de Controle - Infraestrutura</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&amp;family=Rajdhani:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --primary-color: #00f3ff;
+        --secondary-color: #0066cc;
+        --accent-color: #ff0055;
+        --bg-color: #050a14;
+        --panel-bg: rgba(10, 25, 47, 0.7);
+        --text-color: #e0e0e0;
+        --grid-color: rgba(0, 243, 255, 0.1);
+      }
+
+      body {
+        font-family: 'Rajdhani', sans-serif;
+        background-color: var(--bg-color);
+        background-image:
+          linear-gradient(rgba(5, 10, 20, 0.85), rgba(5, 10, 20, 0.9)),
+          url('https://www.genspark.ai/api/files/s/XPwkxSGB'); /* Using file placeholder as bg, effectively dark */
+        background-size: cover;
+        background-attachment: fixed;
+        color: var(--text-color);
+        margin: 0;
+        padding: 20px;
+        overflow-x: hidden;
+        min-height: 100vh;
+      }
+
+      /* Background Grid Effect */
+      body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background:
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px),
+          linear-gradient(var(--grid-color) 1px, transparent 1px);
+        background-size: 40px 40px;
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      /* Layout Container */
+      .container {
+        max-width: 1600px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 20px;
+        padding-bottom: 40px;
+      }
+
+      /* Header */
+      header {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 15px;
+        position: relative;
+      }
+
+      header::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        right: 0;
+        width: 100px;
+        height: 2px;
+        background: var(--primary-color);
+        box-shadow: 0 0 10px var(--primary-color);
+      }
+
+      .logo-container {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 10px 20px;
+        border-radius: 4px;
+        clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);
+      }
+
+      .logo-container img {
+        height: 50px;
+        display: block;
+      }
+
+      h1 {
+        font-family: 'Orbitron', sans-serif;
+        color: var(--primary-color);
+        font-size: 2.2rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        margin: 0;
+        text-align: right;
+      }
+
+      .subtitle {
+        font-size: 1rem;
+        color: #88aaff;
+        text-align: right;
+        margin-top: 5px;
+        letter-spacing: 4px;
+      }
+
+      /* Panels/Cards */
+      .panel {
+        background: var(--panel-bg);
+        border: 1px solid rgba(0, 243, 255, 0.3);
+        backdrop-filter: blur(10px);
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .panel::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 10px;
+        height: 10px;
+        border-top: 2px solid var(--primary-color);
+        border-left: 2px solid var(--primary-color);
+      }
+
+      .panel::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 10px;
+        height: 10px;
+        border-bottom: 2px solid var(--primary-color);
+        border-right: 2px solid var(--primary-color);
+      }
+
+      .panel:hover {
+        box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        border-color: rgba(0, 243, 255, 0.6);
+      }
+
+      .panel-header {
+        font-family: 'Orbitron', sans-serif;
+        color: var(--primary-color);
+        font-size: 1rem;
+        margin-bottom: 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* KPI Cards */
+      .kpi-card {
+        grid-column: span 3;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        height: 120px;
+      }
+
+      .kpi-value {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #fff;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        margin: 5px 0;
+      }
+
+      .kpi-label {
+        font-size: 0.9rem;
+        color: #88aaff;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .status-good {
+        color: var(--primary-color);
+      }
+      .status-warn {
+        color: #ffd700;
+      }
+      .status-alert {
+        color: var(--accent-color);
+      }
+
+      /* Progress Bars Section */
+      .inspection-results {
+        grid-column: span 6;
+      }
+
+      .progress-item {
+        margin-bottom: 20px;
+      }
+
+      .progress-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        font-weight: 600;
+      }
+
+      .progress-track {
+        height: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        overflow: hidden;
+        display: flex;
+      }
+
+      .progress-bar {
+        height: 100%;
+        position: relative;
+      }
+
+      .bar-ok {
+        background: linear-gradient(90deg, #0044cc, #00f3ff);
+      }
+      .bar-repair {
+        background: linear-gradient(90deg, #cc8800, #ffdd00);
+      }
+      .bar-cm {
+        background: linear-gradient(90deg, #880000, #ff0055);
+      }
+
+      /* Table Section */
+      .recent-inspections {
+        grid-column: span 6;
+        height: 350px;
+        overflow-y: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+
+      th {
+        text-align: left;
+        color: var(--primary-color);
+        padding: 10px;
+        border-bottom: 1px solid rgba(0, 243, 255, 0.3);
+        position: sticky;
+        top: 0;
+        background: rgba(5, 10, 20, 0.9);
+        backdrop-filter: blur(5px);
+      }
+
+      td {
+        padding: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        color: #ccc;
+      }
+
+      tr:hover td {
+        background: rgba(0, 243, 255, 0.05);
+        color: #fff;
+      }
+
+      .status-badge {
+        padding: 2px 8px;
+        border-radius: 2px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .badge-ok {
+        background: rgba(0, 243, 255, 0.2);
+        color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+      }
+      .badge-check {
+        background: rgba(255, 215, 0, 0.2);
+        color: #ffd700;
+        border: 1px solid #ffd700;
+      }
+
+      /* Charts & Timeline */
+      .timeline-section {
+        grid-column: span 8;
+      }
+
+      .stats-section {
+        grid-column: span 4;
+      }
+
+      .timeline-graph {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        height: 150px;
+        padding-top: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .graph-bar {
+        width: 30px;
+        background: linear-gradient(to top, rgba(0, 243, 255, 0.2), var(--primary-color));
+        position: relative;
+        transition: height 1s ease;
+        border-top: 2px solid #fff;
+      }
+
+      .graph-bar:hover {
+        background: linear-gradient(to top, rgba(0, 243, 255, 0.4), #fff);
+        filter: drop-shadow(0 0 5px var(--primary-color));
+      }
+
+      .graph-label {
+        text-align: center;
+        margin-top: 10px;
+        font-size: 0.8rem;
+        color: #88aaff;
+      }
+
+      .graph-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+      }
+
+      /* Animations */
+      @keyframes pulse {
+        0% {
+          opacity: 0.6;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.6;
+        }
+      }
+
+      @keyframes scanline {
+        0% {
+          top: 0;
+        }
+        100% {
+          top: 100%;
+        }
+      }
+
+      .scan-line {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: rgba(0, 243, 255, 0.3);
+        box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        animation: scanline 8s linear infinite;
+        pointer-events: none;
+        z-index: 1000;
+        opacity: 0.5;
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #050a14;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--primary-color);
+        border-radius: 3px;
+      }
+
+      /* Responsive */
+      @media (max-width: 1200px) {
+        .kpi-card {
+          grid-column: span 6;
+        }
+        .inspection-results,
+        .recent-inspections {
+          grid-column: span 12;
+        }
+        .timeline-section,
+        .stats-section {
+          grid-column: span 12;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .kpi-card {
+          grid-column: span 12;
+        }
+        .container {
+          grid-template-columns: 1fr;
+        }
+        h1 {
+          font-size: 1.5rem;
+          text-align: center;
+        }
+        header {
+          flex-direction: column;
+          gap: 15px;
+        }
+        .subtitle {
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body style="">
+    <div class="scan-line"></div>
+
+    <header>
+      <div class="logo-container">
+        <!-- Using a reliable logo placeholder since the original file might not render without proper context -->
+        <img src="https://www.genspark.ai/api/files/s/PfjfWykK" alt="CONSAG Logo" style="object-fit: contain" data-height-listener-added="true">
+      </div>
+      <div>
+        <h1>Dashboard de Controle</h1>
+        <div class="subtitle">INFRAESTRUTURA DE INSTRUMENTAÇÃO // SISTEMA ETF-R</div>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- KPI Cards -->
+      <div class="panel kpi-card">
+        <div class="kpi-value status-good">38</div>
+        <div class="kpi-label">Total de RIRs</div>
+      </div>
+
+      <div class="panel kpi-card">
+        <div class="kpi-value status-good">85%</div>
+        <div class="kpi-label">Taxa de Aprovação Média</div>
+      </div>
+
+      <div class="panel kpi-card">
+        <div class="kpi-value status-warn">12</div>
+        <div class="kpi-label">Itens em Reparo</div>
+      </div>
+
+      <div class="panel kpi-card">
+        <div class="kpi-value status-alert">5</div>
+        <div class="kpi-label">Itens para C&amp;M</div>
+      </div>
+
+      <!-- Progress Results -->
+      <div class="panel inspection-results">
+        <div class="panel-header">
+          <span>STATUS DE INFRAESTRUTURA</span>
+          <span style="font-size: 0.8rem; opacity: 0.7">DADOS CONSOLIDADOS</span>
+        </div>
+
+        <div class="progress-item">
+          <div class="progress-label">
+            <span>Eletrodutos</span>
+            <span>82% Aprovado</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-bar bar-ok" style="width: 82%"></div>
+            <div class="progress-bar bar-repair" style="width: 10%"></div>
+            <div class="progress-bar bar-cm" style="width: 8%"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: 3px; color: #88aaff">
+            <span>Total Instalado: 1.450m</span>
+            <span>Pendências: 18%</span>
+          </div>
+        </div>
+
+        <div class="progress-item">
+          <div class="progress-label">
+            <span>Eletrocalhas e Leitos</span>
+            <span>75% Aprovado</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-bar bar-ok" style="width: 75%"></div>
+            <div class="progress-bar bar-repair" style="width: 20%"></div>
+            <div class="progress-bar bar-cm" style="width: 5%"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: 3px; color: #88aaff">
+            <span>Total Instalado: 890m</span>
+            <span>Pendências: 25%</span>
+          </div>
+        </div>
+
+        <div class="progress-item">
+          <div class="progress-label">
+            <span>Suportes</span>
+            <span>90% Aprovado</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-bar bar-ok" style="width: 90%"></div>
+            <div class="progress-bar bar-repair" style="width: 8%"></div>
+            <div class="progress-bar bar-cm" style="width: 2%"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: 3px; color: #88aaff">
+            <span>Total Instalado: 2.100kg</span>
+            <span>Pendências: 10%</span>
+          </div>
+        </div>
+
+        <div class="progress-item">
+          <div class="progress-label">
+            <span>Tubing</span>
+            <span>65% Aprovado</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-bar bar-ok" style="width: 65%"></div>
+            <div class="progress-bar bar-repair" style="width: 15%"></div>
+            <div class="progress-bar bar-cm" style="width: 20%"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: 3px; color: #88aaff">
+            <span>Total Instalado: 320m</span>
+            <span>Pendências: 35%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Inspections Table -->
+      <div class="panel recent-inspections">
+        <div class="panel-header">
+          <span>REGISTROS RECENTES (RIR)</span>
+          <span style="font-size: 0.8rem; opacity: 0.7">LIVE FEED</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>RIR ID</th>
+              <th>Área</th>
+              <th>Semana</th>
+              <th>Status</th>
+              <th>Obs.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>INFRA-INSTR-CHZ-350</td>
+              <td>SE</td>
+              <td>SEM.33</td>
+              <td><span class="status-badge badge-ok">APROVADO</span></td>
+              <td>80% Concluído</td>
+            </tr>
+            <tr>
+              <td>INFRA-INSTR-CHZ-332</td>
+              <td>260</td>
+              <td>SEM.32</td>
+              <td><span class="status-badge badge-check">REPARO</span></td>
+              <td>Suporte pendente</td>
+            </tr>
+            <tr>
+              <td>INFRA-INSTR-CHZ-330</td>
+              <td>310</td>
+              <td>SEM.31</td>
+              <td><span class="status-badge badge-ok">PARCIAL</span></td>
+              <td>50% Liberado</td>
+            </tr>
+            <tr>
+              <td>INFRA-INSTR-JEI-001</td>
+              <td>140</td>
+              <td>SEM.30</td>
+              <td><span class="status-badge badge-check">PENDENTE</span></td>
+              <td>Aguardando Mat.</td>
+            </tr>
+            <tr>
+              <td>INFRA-INSTR-CHZ-328</td>
+              <td>240</td>
+              <td>SEM.29</td>
+              <td><span class="status-badge badge-ok">MISTO</span></td>
+              <td>Vários itens</td>
+            </tr>
+            <tr>
+              <td>INFRA-INSTR-CHZ-326</td>
+              <td>110</td>
+              <td>SEM.28</td>
+              <td><span class="status-badge badge-ok">APROVADO</span></td>
+              <td>Concluído</td>
+            </tr>
+            <tr>
+              <td>TUBING-PDA-120006</td>
+              <td>330</td>
+              <td>SEM.18</td>
+              <td><span class="status-badge badge-check">REPARO</span></td>
+              <td>Tubing amassado</td>
+            </tr>
+            <tr>
+              <td>INFRA-INSTR-CHZ-321</td>
+              <td>130</td>
+              <td>SEM.21</td>
+              <td><span class="status-badge badge-ok">APROVADO</span></td>
+              <td>Liberado</td>
+            </tr>
+            <tr>
+              <td>INFRA-INSTR-CHZ-316</td>
+              <td>260</td>
+              <td>SEM.19</td>
+              <td><span class="status-badge badge-ok">APROVADO</span></td>
+              <td>Liberado</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Timeline/Graph Section -->
+      <div class="panel timeline-section">
+        <div class="panel-header">
+          <span>VOLUME DE INSPEÇÕES SEMANAL</span>
+          <span style="font-size: 0.8rem; opacity: 0.7">HISTÓRICO</span>
+        </div>
+        <div class="timeline-graph">
+          <div class="graph-col">
+            <div class="graph-bar" style="height: 40%"></div>
+            <div class="graph-label">SEM.15</div>
+          </div>
+          <div class="graph-col">
+            <div class="graph-bar" style="height: 65%"></div>
+            <div class="graph-label">SEM.18</div>
+          </div>
+          <div class="graph-col">
+            <div class="graph-bar" style="height: 30%"></div>
+            <div class="graph-label">SEM.20</div>
+          </div>
+          <div class="graph-col">
+            <div class="graph-bar" style="height: 55%"></div>
+            <div class="graph-label">SEM.24</div>
+          </div>
+          <div class="graph-col">
+            <div class="graph-bar" style="height: 45%"></div>
+            <div class="graph-label">SEM.28</div>
+          </div>
+          <div class="graph-col">
+            <div class="graph-bar" style="height: 80%"></div>
+            <div class="graph-label">SEM.30</div>
+          </div>
+          <div class="graph-col">
+            <div class="graph-bar" style="height: 95%"></div>
+            <div class="graph-label">SEM.33</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- C&M Metrics -->
+      <div class="panel stats-section">
+        <div class="panel-header">
+          <span>AVANÇO C&amp;M</span>
+        </div>
+        <div style="display: flex; justify-content: space-around; align-items: center; height: 100%">
+          <div style="text-align: center">
+            <div style="
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                border: 3px solid var(--primary-color);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 10px;
+                box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+              ">
+              <span style="font-family: 'Orbitron'; font-size: 1.5rem; font-weight: bold">12%</span>
+            </div>
+            <div class="kpi-label">Previsto</div>
+          </div>
+          <div style="text-align: center">
+            <div style="
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                border: 3px solid var(--accent-color);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 10px;
+                box-shadow: 0 0 15px rgba(255, 0, 85, 0.3);
+              ">
+              <span style="font-family: 'Orbitron'; font-size: 1.5rem; font-weight: bold; color: var(--accent-color)">8.4%</span>
+            </div>
+            <div class="kpi-label">Realizado</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer style="text-align: center; color: #557; font-size: 0.8rem; padding: 20px">
+      SYSTEM STATUS: ONLINE // DATA REFRESH: LIVE // CONSAG ENGINEERING DIVISION
+    </footer>
+  
+
+</body></html>
